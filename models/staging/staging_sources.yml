@@ -1,0 +1,41 @@
+sources:
+  - name: staging
+    database: alid_tools
+    schema: staging
+    tables:
+      - name: "J_ADALM"
+        description: "C/A Deal - Base & Sect Sblmts (ACO)"
+        identifier: J_ADALM
+        freshness: null      
+      - name: "J_ADAMI"
+        description: "C/A Deal - Misc Codes/Info (ACO)"
+        identifier: J_ADAMI
+        freshness: null  
+      - name: "J_ADAMS"
+        description: "C/A Deal Information (ACO)"
+        identifier: J_ADAMS
+        freshness: null  
+      - name: "J_ADWB"
+        description: "Information Binder (ACO)"
+        identifier: J_ADWB
+        freshness: null  
+      - name: "J_ADWC"
+        description: "Information Chapter Registery (ACO)"
+        identifier: J_ADWC
+        freshness: null  
+      - name: "J_ADWP"
+        description: "Information Worksheet (ACO)"
+        identifier: J_ADWP
+        freshness: null  
+      - name: "J_CAMI"
+        description: "CA Miscellaneous Codes/Information"
+        identifier: J_CAMI
+        freshness: null  
+      - name: "J_CAMS"
+        description: "Credit Arrangement Master Record"
+        identifier: J_CAMS
+        freshness: null  
+      - name: "J_SYXM"
+        description: "Foreign Currency Rate Table"
+        identifier: J_SYXM
+        freshness: null          

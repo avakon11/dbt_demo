@@ -1,0 +1,62 @@
+version: 2
+snapshots:
+ - name: facilities_scd2_snapshot
+   description: |
+     SCD Type 2 snapshot of the INT_FACILITY model.
+     Uses check strategy on all columns → every change creates a new historic row.
+     Current rows have dbt_valid_to = NULL.
+   config:
+     target_schema: dev_marts   # (optional – already defined in .sql, but safe to repeat)
+     unique_key: "J_BACI"
+     strategy: check
+     check_cols: all
+   columns:
+     - name: "J_BACI"
+       description: "Business / natural key of the facility"
+       tests:
+         - not_null
+         - unique:
+             config:
+               where: "dbt_valid_to IS NULL"   # current record must be unique on business key
+     - name: dbt_scd_id
+       description: "dbt-generated surrogate key (SHA hash) – uniquely identifies each version"
+       tests:
+         - unique
+         - not_null
+     - name: dbt_updated_at
+       description: "Timestamp when this row/version was inserted into the snapshot (time of snapshot run when change was detected)"
+       tests:
+         - not_null
+     - name: dbt_valid_from
+       description: "Start of the period this version is valid (inclusive)"
+       tests:
+         - not_null
+     - name: dbt_valid_to
+       description: "End of the period this version is valid (exclusive). NULL = current/active version"
+     # ── Add your actual business columns below (example) ─────────────────────
+     # - name: facility_name
+     #   description: "Full name of the facility"
+     #
+     # - name: facility_code
+     #   description: ""
+     #
+     # - name: country
+     #   description: ""
+     #
+     # - name: status
+     #   description: ""
+     #   tests:
+     #     - accepted_values:
+     #         values: ['ACTIVE', 'INACTIVE', 'PENDING']
+   tests:
+     # Optional but highly recommended SCD2 integrity tests
+     # (require dbt-expectations or dbt-utils)
+     - dbt_expectations.expect_column_pair_to_have_no_overlap:
+         column_A: dbt_valid_from
+         column_B: dbt_valid_to
+         where: "dbt_valid_to IS NOT NULL"
+     # Ensures only one current row per business key
+     - dbt_utils.unique_combination_of_columns:
+         combination_of_columns:
+           - J_BACI
+           - dbt_valid_to   # dbt_valid_to must be NULL for current rows → this makes the combo unique
